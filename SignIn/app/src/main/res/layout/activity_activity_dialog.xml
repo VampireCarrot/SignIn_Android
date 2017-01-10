@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="89dp"
+            android:background="@null"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawablePadding="8dp"
+                android:text="请输入虚拟地址"
+                android:textColor="#585858"
+                android:textSize="17sp"/>
+
+            <EditText
+                android:id="@+id/tv_kefu_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#2CA2FC"
+                android:textSize="17sp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ffffff"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:text="取消"
+                android:textColor="#585858"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/btn_confirm_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="0.5dp"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:text="确定"
+                android:textColor="#2CA2FC"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

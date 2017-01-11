@@ -33,11 +33,7 @@ public class Api {
     /**
      * 服务器地址
      */
-    // 请求公共部分
-//    private static final String BASE_URL = " http://api.yytianqi.com/";     //get
     private static final String BASE_URL = "http://192.168.0.248:8080";//POST
-
-
     // 消息头
     private static final String HEADER_X_HB_Client_Type = "X-HB-Client-Type";
     private static final String FROM_ANDROID = "ayb-android";

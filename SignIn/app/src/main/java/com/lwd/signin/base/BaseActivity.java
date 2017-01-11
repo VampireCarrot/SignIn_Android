@@ -80,14 +80,12 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         super.onResume();
         if (Build.VERSION.SDK_INT >= 21) {
             decorView = getWindow().getDecorView();
-            option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            option =View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             decorView.setSystemUiVisibility(option);
-            getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 

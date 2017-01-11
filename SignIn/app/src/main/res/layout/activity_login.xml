@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/ll_content"
+    android:background="@drawable/si_login_bg"
+    android:layout_height="match_parent">
+    <!--LOGO-->
+    <RelativeLayout
+        android:id="@+id/ll_top"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="200dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_alignParentTop="true">
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_bule_point"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_bule_point"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:textSize="35dp"
+                android:textColor="@color/white"
+                android:text="Easy  Sign"
+                android:id="@+id/textView3" />
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:text="Remember bits"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_bule_point"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--LOGIN-->
+    <LinearLayout
+        android:id="@+id/ll_center"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/ll_top"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/ll_edit_whit_bg"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_height="49dp">
+
+            <EditText
+                android:id="@+id/edt_UserName"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:hint="UserName"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="12dp"
+                android:background="@null"
+                />
+            <ImageView
+                android:id="@+id/iv_email"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/edt_UserName"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_email"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/ll_edit_whit_bg"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_marginTop="18dp"
+            android:layout_height="49dp">
+
+            <EditText
+                android:id="@+id/edt_Password"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:hint="PassWord"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="12dp"
+                android:background="@null"
+                />
+            <ImageView
+                android:id="@+id/iv_password"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/edt_Password"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_password"/>
+        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:textColor="@drawable/text_white_blue_selector"
+            android:textColorHint="@color/white"
+            android:layout_marginTop="18dp"
+            android:clickable="true"
+            android:text="Forget your Password?"/>
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:text="Sign In"
+            android:textSize="16dp"
+            android:textColor="@drawable/text_white_blue_selector"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/btn_login_selector"
+            />
+
+    </LinearLayout>
+    <!--REGISTER-->
+    <RelativeLayout
+        android:id="@+id/ll_reigster"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/transparent"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_nu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="14dp"
+            android:textColor="@color/white"
+            android:text="Do not hava an account ?"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="18dp"
+            android:clickable="true"
+            android:textColor="@drawable/text_white_blue_selector"
+            android:layout_toRightOf="@+id/tv_nu"
+            android:text=" Create Account ."/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

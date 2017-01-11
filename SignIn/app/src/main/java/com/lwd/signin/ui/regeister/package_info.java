@@ -1,4 +1,4 @@
-package com.lwd.signin.ui;
+package com.lwd.signin.ui.regeister;
 
 /**
  * User: LWD

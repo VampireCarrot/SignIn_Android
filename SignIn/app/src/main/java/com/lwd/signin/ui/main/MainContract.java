@@ -15,6 +15,7 @@ import com.lwd.signin.model.ResultBean.Login;
 public interface MainContract {
     interface View extends BaseView {
         void loginSuccess(Login login);
+
     }
 
     interface Presenter extends BasePresenter {

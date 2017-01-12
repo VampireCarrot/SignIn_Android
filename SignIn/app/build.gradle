@@ -5,11 +5,32 @@ android {
     buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "com.lwd.signin"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        /**
+         * 设置你的keystore相关
+         * demo中只是一个示例，使用时请根据实际情况进行配置
+         */
+        debug {
+            //keystore中key的别名
+            keyAlias 'lwd'
+            //keystore中key的密码
+            keyPassword '111111'
+            //keystore的文件路径，可以是绝对路径也可以是相对路径
+            storeFile file('C:/Users/WANGJIAN/Desktop/KEY.jks')
+            //keystore的密码
+            storePassword '111111'
+        }
+    }
+    sourceSets{
+        main{
+            jniLibs.srcDirs=['libs']
+        }
     }
     buildTypes {
         release {
@@ -20,7 +41,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -36,4 +57,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile files('libs/AMap_Location_V3.2.1_20161228.jar')
+    compile files('libs/android-support-v4.jar')
+    compile files('libs/Android_Map3D_SDK_V4.1.3_20161208.jar')
 }

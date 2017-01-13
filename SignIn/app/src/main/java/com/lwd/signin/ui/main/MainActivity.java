@@ -1,14 +1,14 @@
 package com.lwd.signin.ui.main;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -29,6 +29,11 @@ import com.lwd.signin.model.ResultBean.Login;
 import com.lwd.signin.utils.LogUtil;
 import com.lwd.signin.utils.ToastUtils;
 import com.lwd.signin.utils.Utils;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.PermissionNo;
+import com.yanzhenjie.permission.PermissionYes;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,7 +46,7 @@ import butterknife.OnClick;
  * Description:
  */
 
-public class MainActivity extends BaseActivity<MainContract.Presenter> implements MainContract.View {
+public class MainActivity extends BaseActivity<MainContract.Presenter> implements MainContract.View ,AMapLocationListener{
 
 
     @Bind(R.id.ll_left_menu)
@@ -63,7 +68,9 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
     public AMapLocationClientOption mLocationOption = null;
     //声明Amap类对象
     private AMap aMap;
-
+    //声明静态常量
+    private static final int PERMISSION_REQUEST_CODE = 101;
+    private static final int PERMISSION_SETTING_CODE = 102;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,17 +78,46 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         ButterKnife.bind(this);
         initApi();
         this.createPresenter(new MainPresenter(this));
+        initPermission();
         initLocation();
-        ivMap.onCreate(savedInstanceState);// 此方法必须重写
-
-
+        initMap(savedInstanceState);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        ivMap.onSaveInstanceState(outState);
+    }
+
+    /**
+     * 初始化APP权限
+     */
+    private void initPermission() {
+        // 申请多个权限。
+        AndPermission.with(this)
+                .requestCode(PERMISSION_REQUEST_CODE)
+                .permission(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_WIFI_STATE,
+                        Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+                        Manifest.permission.BLUETOOTH)
+                // rationale作用是：用户拒绝一次权限，再次申请时先征求用户同意，再打开授权对话框，避免用户勾选不再提示。
+                .rationale((requestCode, rationale) ->
+                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
+                        AndPermission.rationaleDialog(MainActivity.this, rationale).show()
+                )
+                .send();
+    }
+
+    /**
+     * 初始化定位
+     */
     private void initLocation() {
         //初始化定位
         mLocationClient = new AMapLocationClient(getApplicationContext());
         //设置定位回调监听
-        mLocationClient.setLocationListener(mAMapLocationListener);
+        mLocationClient.setLocationListener(this);
         //初始化AMapLocationClientOption对象
         mLocationOption = new AMapLocationClientOption();
         //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
@@ -99,37 +135,52 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         //给定位客户端对象设置定位参数
         mLocationOption.setOnceLocation(true);
         mLocationClient.setLocationOption(mLocationOption);
-
         mLocationClient.startLocation();
 
     }
-    AMapLocationListener mAMapLocationListener = new AMapLocationListener(){
-        @Override
-        public void onLocationChanged(AMapLocation amapLocation) {
-            if (amapLocation != null) {
-                if (amapLocation.getErrorCode() == 0) {
 
-                    //可在其中解析amapLocation获取相应内容。
-                    //解析定位结果
-                    String result = Utils.getLocationStr(amapLocation);
-                    if (aMap == null) {
-                        aMap = ivMap.getMap();
-                    }
-                    UiSettings uiSettings = aMap.getUiSettings();
-                    LatLng latLng=  new LatLng(amapLocation.getLatitude(),amapLocation.getLongitude());
-                    aMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, 18, 30, 30)));
-                    aMap.clear();
-                    uiSettings.setScaleControlsEnabled(false);
-                    uiSettings.setZoomGesturesEnabled(false);
-                    aMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                    LogUtil.e(result);
-                }else {
-                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                    LogUtil.e("AmapError","location Error, ErrCode:" + amapLocation.getErrorCode() + ", errInfo:" + amapLocation.getErrorInfo());
-                }
-            }
+    /**
+     * 初始化高德地图
+     * @param savedInstanceState
+     */
+    private void initMap(Bundle savedInstanceState) {
+        ivMap.onCreate(savedInstanceState);// 此方法必须重写
+        if (aMap == null) {
+            aMap = ivMap.getMap();
         }
-    };
+        UiSettings settings=aMap.getUiSettings();
+        settings.setZoomControlsEnabled(false);
+        settings.setCompassEnabled(true);
+        settings.setScrollGesturesEnabled(false);
+        settings.setZoomGesturesEnabled(false);
+        settings.setTiltGesturesEnabled(false);
+        settings.setRotateGesturesEnabled(false);
+        settings.setAllGesturesEnabled (false);
+    }
+    @PermissionYes(PERMISSION_REQUEST_CODE)
+    private void getMultiYes(List<String> grantedPermissions) {
+        Toast.makeText(this, "获取联系人、短信权限成功", Toast.LENGTH_SHORT).show();
+    }
+
+    @PermissionNo(PERMISSION_REQUEST_CODE)
+    private void getMultiNo(List<String> deniedPermissions) {
+        Toast.makeText(this, "获取联系人、短信权限失败", Toast.LENGTH_SHORT).show();
+
+        // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
+        if (AndPermission.hasAlwaysDeniedPermission(this, deniedPermissions)) {
+            AndPermission.defaultSettingDialog(this, PERMISSION_SETTING_CODE)
+                    .setTitle("哎呀，没有权限")
+                    .setMessage("你拒绝了我们的权限申请，真是不能愉快的玩耍了！")
+                    .setPositiveButton("给你给你")
+                    .setNegativeButton("就不给你", null)
+                    .show();
+
+            // 更多自定dialog，请看上面。
+        }
+    }
+
+
+
     @Override
     public void loginSuccess(Login login) {
 
@@ -160,6 +211,16 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
         ivMap.onPause();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PERMISSION_SETTING_CODE: {
+                Toast.makeText(this, "用户从设置回来了", Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+    }
+
     @OnClick({R.id.ll_left_menu, R.id.btn_signin})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -167,55 +228,28 @@ public class MainActivity extends BaseActivity<MainContract.Presenter> implement
                 ToastUtils.showShort("销毁了");
                 break;
             case R.id.btn_signin:
-                ToastUtils.showShort("点击了");
-                //启动定位
-                insertDummyContactWrapper();
+                ToastUtils.showShort("我我我我");
 
                 break;
         }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        ivMap.onSaveInstanceState(outState);
-    }
-
-    /**
-     * 判断当前权限是否允许,弹出提示框来选择
-     */
-    private void insertDummyContactWrapper() {
-        // 需要验证的权限
-        int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
-            // 弹窗询问 ，让用户自己判断
-            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, 100011);
-            return;
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {
+                //可在其中解析amapLocation获取相应内容。
+                //解析定位结果
+                String result = Utils.getLocationStr(aMapLocation);
+                LatLng latLng=  new LatLng(aMapLocation.getLatitude(),aMapLocation.getLongitude());
+                aMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, 18, 30, 30)));
+                aMap.clear();
+                aMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                LogUtil.e(result);
+            }else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                LogUtil.e("AmapError","location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:" + aMapLocation.getErrorInfo());
+            }
         }
     }
-    /**
-     * 用户进行权限设置后的回调函数 , 来响应用户的操作，无论用户是否同意权限，Activity都会
-     * 执行此回调方法，所以我们可以把具体操作写在这里
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode) {
-            case 100011:
-                if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    //这里写你需要相关权限的操作
-
-                }else{
-                    ToastUtils.showShort("权限没有开启");
-                }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
 }
